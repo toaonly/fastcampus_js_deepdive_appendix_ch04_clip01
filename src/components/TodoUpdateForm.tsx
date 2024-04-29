@@ -8,7 +8,7 @@ type TodoFormProps = {
   onUpdateCancel(e?: MouseEvent<HTMLButtonElement>): void
 }
 
-export default function TodoFormUpdate({ todo, onUpdate, onUpdateCancel }: TodoFormProps) {
+export default function TodoUpdateForm({ todo, onUpdate, onUpdateCancel }: TodoFormProps) {
   const [newTitle, setNewTitle] = useState(todo.title)
 
   const onUpdateFormSubmit: FormEventHandler = e => {
