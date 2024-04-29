@@ -23,7 +23,7 @@ export default function TodoList({
         <TodoRow key={todo.id} todo={todo} onDoneUpdate={onUpdate}>
           <>
             {selectedTodoIdForUpdate === todo.id ? (
-              <TodoUpdateForm todo={todo} onUpdate={onUpdate} onUpdateCancle={onUpdateEnd} />
+              <TodoUpdateForm todo={todo} onUpdate={onUpdate} onUpdateCancel={onUpdateEnd} />
             ) : (
               <div
                 role="link"

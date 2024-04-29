@@ -15,6 +15,7 @@ export default function TodoRow({ todo, onDoneUpdate, children }: TodoRowProps) 
       onDoneUpdate(updatedTodo)
     })
   }
+
   return (
     <div key={todo.id} className="flex items-center py-4 px-4 gap-4">
       <div className={`${todo.done ? 'checked' : ''}`} role="checkbox" onClick={() => onTodoDoneClick()}>

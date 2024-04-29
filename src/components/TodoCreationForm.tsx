@@ -25,9 +25,11 @@ export default function TodoCreationForm({ onCreated }: TodoCreationFormProps) {
           <form className="flex gap-1 items-center" onSubmit={onCreationFormSubmit}>
             <input
               type="text"
+              required
               className="flex-1"
               value={newTodoTitle}
               onChange={e => setNewTodoTitle(e.target.value)}
+              data-testid="input-new-todo-title"
             />
             <button>추가</button>
           </form>
