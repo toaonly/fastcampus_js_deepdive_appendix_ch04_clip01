@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import { useEffect, useState } from 'react'
+import { type FormEventHandler, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import api from '../api'
 import { Icons } from '../components'
@@ -7,18 +7,34 @@ import type { Todo } from '../types'
 
 export default function TodosPage() {
   const navigate = useNavigate()
-  const params = useParams<{ uuid?: string }>()
+  const { uuid } = useParams<{ uuid?: string }>()
   const [todos, setTodos] = useState<Todo[]>([])
   const [title, setTitle] = useState('')
   const [newTodoTitle, setNewTodoTitle] = useState('')
+  const onCreationFormSubmit: FormEventHandler = e => {
+    e.preventDefault()
+
+    api.createTodo({ title: newTodoTitle }).then(() => {
+      api.getTodos().then(setTodos)
+      setNewTodoTitle('')
+    })
+  }
+  const onUpdateFormSubmit: FormEventHandler = e => {
+    e.preventDefault()
+
+    api.updateTodo(uuid!, { title }).then(({ title }) => {
+      setTodos(todos => todos.map(_todo => (_todo.id === uuid! ? { ..._todo, title } : _todo)))
+      navigate('/', { replace: true })
+    })
+  }
 
   useEffect(() => {
     api.getTodos().then(setTodos)
   }, [])
 
   useEffect(() => {
-    if (params.uuid) setTitle(todos.find(todo => todo.id === params.uuid)?.title ?? '')
-  }, [params.uuid, todos])
+    if (uuid) setTitle(todos.find(todo => todo.id === uuid)?.title ?? '')
+  }, [uuid, todos])
 
   return (
     <div className="flex flex-col divide-y divide-slate-700">
@@ -26,17 +42,7 @@ export default function TodosPage() {
         <div className="flex flex-1 items-center gap-4">
           <div className="flex-1">
             <div className="mb-2">새로운 할 일 추가하기</div>
-            <form
-              className="flex gap-1 items-center"
-              onSubmit={e => {
-                e.preventDefault()
-
-                api.createTodo({ title: newTodoTitle }).then(() => {
-                  api.getTodos().then(setTodos)
-                  setNewTodoTitle('')
-                })
-              }}
-            >
+            <form className="flex gap-1 items-center" onSubmit={onCreationFormSubmit}>
               <input
                 type="text"
                 className="flex-1"
@@ -64,18 +70,8 @@ export default function TodosPage() {
           </div>
           <div className="flex flex-1 items-center gap-4">
             <div className="flex-1">
-              {params.uuid === todo.id ? (
-                <form
-                  className="flex gap-1"
-                  onSubmit={e => {
-                    e.preventDefault()
-
-                    api.updateTodo(todo.id, { title }).then(({ title }) => {
-                      setTodos(todos => todos.map(_todo => (_todo.id === todo.id ? { ..._todo, title } : _todo)))
-                      navigate('/', { replace: true })
-                    })
-                  }}
-                >
+              {uuid === todo.id ? (
+                <form className="flex gap-1" onSubmit={onUpdateFormSubmit}>
                   <input
                     type="text"
                     className="flex-1"
